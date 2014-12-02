@@ -409,20 +409,25 @@ def update_subchannel_msgs(force=False):
             continue
 
         header = m['header']['msg_type']
+
         if header == 'status':
             continue
         elif header == 'stream':
             # TODO: allow for distinguishing between stdout and stderr (using
             # custom syntax markers in the vim-ipython buffer perhaps), or by
             # also echoing the message to the status bar
-            s = strip_color_escapes(m['content']['data'])
-        elif header == 'pyout':
+            field_name = 'data'
+            if field_name not in m['content']:
+                field_name = 'text'
+            field_name = 'data' if 'data' in m['content'] else 'text'
+            s = strip_color_escapes(m['content'][field_name])
+        elif header in ['pyout', 'execute_result']:
             s = status_prompt_out % {'line': m['content']['execution_count']}
             s += m['content']['data']['text/plain']
         elif header == 'display_data':
             # TODO: handle other display data types (HTML? images?)
             s += m['content']['data']['text/plain']
-        elif header == 'pyin':
+        elif header in ['pyin', 'execute_input']:
             # TODO: the next line allows us to resend a line to IPython if
             # %doctest_mode is on. In the future, IPython will send the
             # execution_count on subchannel, so this will need to be updated
@@ -438,6 +443,9 @@ def update_subchannel_msgs(force=False):
             c = m['content']
             s = "\n".join(map(strip_color_escapes,c['traceback']))
             s += c['ename'] + ":" + c['evalue']
+        else:
+            debug('Unexpected message type {0}'.format(header))
+            debug(str(m))
 
         if s.find('\n') == -1:
             # somewhat ugly Unicode workaround from
