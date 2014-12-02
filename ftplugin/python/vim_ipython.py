@@ -20,14 +20,14 @@ except ImportError:
 
 import sys
 
-# get around unicode problems when interfacing with vim
+# Get around unicode problems when interfacing with Vim.
 vim_encoding=vim.eval('&encoding') or 'utf-8'
 
 try:
     sys.stdout.flush
 except AttributeError:
     # IPython complains if stderr and stdout don't have flush
-    # this is fixed in newer version of Vim
+    # This is fixed in newer version of Vim.
     class WithFlush(object):
         def __init__(self,noflush):
             self.write=noflush.write
@@ -62,7 +62,7 @@ status_blank_lines = int(vim_variable('g:ipy_status_blank_lines', '1'))
 
 
 ip = '127.0.0.1'
-# this allows us to load vim_ipython multiple times
+# This allows us to load vim_ipython multiple times.
 try:
     km
     kc
@@ -73,8 +73,8 @@ except NameError:
     pid = None
 
 _install_instructions = """You *must* install IPython into the Python that
-your vim is linked against. If you are seeing this message, this usually means
-either (1) installing IPython using the system Python that vim is using, or
+your Vim is linked against. If you are seeing this message, this usually means
+either (1) installing IPython using the system Python that Vim is using, or
 (2) recompiling Vim against the Python where you already have IPython
 installed. This is only a requirement to allow Vim to speak with an IPython
 instance using IPython's own machinery. It does *not* mean that the IPython
@@ -226,7 +226,7 @@ def get_doc(word, level=0):
         return ["Not connected to IPython, cannot query: %s" % word]
     msg_id = kc.shell_channel.object_info(word, level)
     doc = get_doc_msg(msg_id)
-    # get around unicode problems when interfacing with vim
+    # Get around unicode problems when interfacing with Vim.
     return [d.encode(vim_encoding) for d in doc]
 
 import re
@@ -293,10 +293,10 @@ def get_doc_buffer(level=0):
     #vim.command('pedit doc')
     #vim.command('normal! ') # go to previous window
     if level == 0:
-        # use the ReST formatting that ships with stock vim
+        # Use the ReST formatting that ships with stock Vim
         vim.command('setlocal syntax=rst')
     else:
-        # use Python syntax highlighting
+        # Use Python syntax highlighting.
         vim.command('setlocal syntax=python')
 
 def ipy_complete(base, current_line, pos):
@@ -305,12 +305,12 @@ def ipy_complete(base, current_line, pos):
         m = get_child_msg(msg_id)
         matches = m['content']['matches']
         matches.insert(0,base) # the "no completion" version
-        # we need to be careful with unicode, because we can have unicode
+        # We need to be careful with unicode, because we can have unicode
         # completions for filenames (for the %run magic, for example). So the next
         # line will fail on those:
         #completions= [str(u) for u in matches]
         # because str() won't work for non-ascii characters
-        # and we also have problems with unicode in vim, hence the following:
+        # we also have problems with unicode in Vim, hence the following:
         return matches
     except Empty:
         echo("no reply from IPython kernel")
@@ -396,7 +396,7 @@ def update_subchannel_msgs(debug=False, force=False):
         if header == 'status':
             continue
         elif header == 'stream':
-            # TODO: alllow for distinguishing between stdout and stderr (using
+            # TODO: allow for distinguishing between stdout and stderr (using
             # custom syntax markers in the vim-ipython buffer perhaps), or by
             # also echoing the message to the status bar
             s = strip_color_escapes(m['content']['data'])
@@ -541,7 +541,7 @@ def run_these_lines(dedent=False):
     if not reselect:
         vim.command("normal! ")
 
-    #vim lines start with 1
+    # Vim line numbering starts at 1.
     #print("lines %d-%d sent to ipython"% (r.start+1,r.end+1))
     prompt = "lines %d-%d "% (r.start+1,r.end+1)
     print_prompt(prompt,msg_id)
