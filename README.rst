@@ -4,7 +4,7 @@ vim-ipython
 
 A two-way integration between Vim and IPython.
 
-IPython versions 0.11.x, 0.12.x, 0.13.x, 1.x and 2.x
+Supports IPython versions 0.11.x, 0.12.x, 0.13.x, 1.x, 2.x and 3.x.
 
 * author: Paul Ivanov (http://pirsquared.org)
 * github: http://github.com/ivanov/vim-ipython
