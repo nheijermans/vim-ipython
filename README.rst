@@ -18,12 +18,12 @@ IPython.
 
 The big change from previous versions of ``ipy.vim`` is that it no longer
 requires the old brittle ``ipy_vimserver.py`` instantiation, and since
-it uses just vim and python, it is platform independent (i.e. works
-even on windows, unlike the previous \*nix only solution). The requirements
-are IPython 0.11 or newer with zeromq capabilities, vim compiled with +python.
+it uses just Vim and Python, it is platform independent (i.e. works
+even on Windows, unlike the previous \*nix only solution). The requirements
+are IPython 0.11 or newer with ZeroMQ capabilities, Vim compiled with +python.
 
 If you can launch ``ipython qtconsole`` or ``ipython kernel``, and
-``:echo has('python')`` returns 1 in vim, you should be good to go.
+``:echo has('python')`` returns 1 in Vim, you should be good to go.
 
 -----------------
 Quickstart Guide:
@@ -119,7 +119,7 @@ IPython's object? Functionality
 -------------------------------
 
 If you're using gvim, mouse-over a variable to see IPython's ``?`` equivalent.
-If you're using vim from a terminal, or want to copy something from the
+If you're using Vim from a terminal, or want to copy something from the
 docstring, type ``<leader>d``. ``<leader>`` is usually ``\`` (the backslash
 key).  This will open a quickpreview window, which can be closed by hitting
 ``q`` or ``<escape>``.
@@ -128,7 +128,7 @@ key).  This will open a quickpreview window, which can be closed by hitting
 IPython's tab-completion Functionality
 --------------------------------------
 vim-ipython activates a 'completefunc' that queries IPython.
-A completefunc is activated using ``Ctrl-X Ctrl-U`` in Insert Mode (vim
+A completefunc is activated using ``Ctrl-X Ctrl-U`` in Insert Mode (Vim
 default). You can combine this functionality with SuperTab to get tab
 completion.
 
@@ -146,7 +146,7 @@ If at any later time you wish to bring this shell up, including if you've set
 ``monitor_subchannel=False``, hit ``<leader>s``.
 
 **NEW since IPython 0.12**
-For local kernels (kernels running on the same machine as vim), `Ctrl-C` in
+For local kernels (kernels running on the same machine as Vim), `Ctrl-C` in
 the vim-ipython 'shell' sends an keyboard interrupt. (Note: this feature may
 not work on Windows, please report the issue to ).
 
@@ -208,7 +208,7 @@ Known issues:
 - For now, vim-ipython only connects to an ipython session in progress.
 - The standard ipython clients (console, qtconsole, notebook) do not currently
   display the result of computation which they did not initialize. This means
-  that if you send print statements for execution from within vim, they will
+  that if you send print statements for execution from within Vim, they will
   only be shown inside the vim-ipython shell buffer, but **not** within any of
   the standard clients. This is not a limitation of vim-ipython, but a
   limitation of those built-in clients, see `ipython/ipython#1873
@@ -217,16 +217,16 @@ Known issues:
   [IPython PR #3089](https://github.com/ipython/ipython/pull/3089)
 - If ``<CTRL-S>`` does not work inside your terminal, but you are able to run
   some of the other commands successfully (``<F5>``, for example), try running
-  this command before launching vim in the terminal (add it to your
+  this command before launching Vim in the terminal (add it to your
   ``.bashrc`` if it fixes the issue)::
 
     stty stop undef # to unmap ctrl-s
 
-- In vim, if you're getting ``ImportError: No module named
+- In Vim, if you're getting ``ImportError: No module named
   IPython.zmq.blockingkernelmanager`` but are able to import it in regular
-  python, **either**
+  Python, **either**
 
-  1. your ``sys.path`` in vim differs from the ``sys.path`` in regular python.
+  1. your ``sys.path`` in Vim differs from the ``sys.path`` in regular Python.
      Try running these two lines, and comparing their output files::
 
       $ vim -c 'py import vim, sys; vim.current.buffer.append(sys.path)' -c ':wq vim_syspath'
@@ -234,13 +234,13 @@ Known issues:
 
   **or**
 
-  2. your vim is compiled against a different python than you are launching. See
+  2. your Vim is compiled against a different Python than you are launching. See
      if there's a difference between ::
 
       $ vim -c ':py import os; print os.__file__' -c ':q'
       $ python -c 'import os; print os.__file__'
 
-- For vim inside a terminal, using the arrow keys won't work inside a
+- For Vim inside a terminal, using the arrow keys won't work inside a
   documentation buffer, because the mapping for ``<Esc>`` overlaps with
   ``^[OA`` and so on, and we use ``<Esc>`` as a quick way of closing the
   documentation preview window. If you want go without this quick close
@@ -269,12 +269,12 @@ pull request with your attribution.
 * @minrk for guiding me through the IPython kernel manager protocol, and
   support of connection_file-based IPython connection (#13), and keeping
   vim-ipython working across IPython API changes.
-* @nakamuray and @tcheneau for reporting and providing a fix for when vim is
+* @nakamuray and @tcheneau for reporting and providing a fix for when Vim is
   compiled without a gui (#1)
 * @unpingco for reporting Windows bugs (#3,#4), providing better multiline
   dedenting (#15), and suggesting that a resized vim-ipython shell stays
   resized (#16).
-* @simon-b for terminal vim arrow key issue (#5)
+* @simon-b for terminal Vim arrow key issue (#5)
 * @jorgesca and @kwgoodman for shell update problems (#6)
 * @xowlinx and @vladimiroff for Ctrl-S issues in Konsole (#8)
 * @zeekay for easily allowing custom mappings (#9)
@@ -282,7 +282,7 @@ pull request with your attribution.
   only open updating 'shell' if it is open (#29)
 * @enzbang for removing mapping that's not currently functional (#17)
 * @ogrisel  for fixing documentation typo (#19)
-* @koepsell for gracefully exiting in case python is not available (#23)
+* @koepsell for gracefully exiting in case Python is not available (#23)
 * @mrterry for activating completefunc only after a connection is made (#25),
   Ctrl-C implementation in vim-ipython 'shell' (#28)
 * @nonameentername for completion on import statements (#26)
