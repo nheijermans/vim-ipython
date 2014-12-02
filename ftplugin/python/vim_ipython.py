@@ -33,7 +33,7 @@ except ImportError:
         def __getattribute__(self, key):
             return lambda *args: '0'
     vim = NoOp()
-    print("uh oh, not running inside vim")
+    print("Uh oh, not running inside Vim.")
 
 reselect = False            # reselect lines after sending from Visual mode
 show_execution_count = True # wait to get numbers for In[43]: feedback?
@@ -82,7 +82,6 @@ status_prompt_colors = {
 
 status_blank_lines = int(vim_variable('g:ipy_status_blank_lines', '1'))
 
-
 ip = '127.0.0.1'
 # This allows us to load vim_ipython multiple times.
 try:
@@ -109,6 +108,7 @@ def new_ipy(s=''):
     km = KernelManager()
     km.start_kernel()
     return km_from_string(km.connection_file)
+
 
 def km_from_string(s=''):
     """create kernel manager from IPKernelApp string
@@ -195,7 +195,7 @@ def km_from_string(s=''):
     if not hasattr(kc, 'iopub_channel'):
         kc.iopub_channel = kc.sub_channel
 
-    # now that we're connect to an ipython kernel, activate completion
+    # Now that we're connected to an IPython kernel, activate the completion
     # machinery, but do so only for the local buffer if the user added the
     # following line the vimrc:
     #   let g:ipy_completefunc = 'local'
@@ -206,7 +206,8 @@ def km_from_string(s=''):
             setl completefunc=CompleteIPython
         endif
         """)
-    # also activate GUI doc balloons if in gvim
+
+    # Also activate GUI doc balloons if in gvim.
     vim.command("""
         if has('balloon_eval')
             set bexpr=IPythonBalloonExpr()
@@ -398,6 +399,7 @@ def update_subchannel_msgs(debug=False, force=False):
             #echo('skipping a message on sub_channel','WarningMsg')
             #echo(str(m))
             continue
+
         header = m['header']['msg_type']
         if header == 'status':
             continue
