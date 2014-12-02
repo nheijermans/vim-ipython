@@ -180,15 +180,17 @@ def km_from_string(s=''):
     kc.start_channels()
     send = kc.shell_channel.execute
 
-    #XXX: backwards compatibility for IPython < 0.13
     sc = kc.shell_channel
-    num_oinfo_args = len(inspect.getargspec(sc.object_info).args)
-    if num_oinfo_args == 2:
-        # patch the object_info method which used to only take one argument
-        klass = sc.__class__
-        klass._oinfo_orig = klass.object_info
-        klass.object_info = lambda s,x,y: s._oinfo_orig(x)
-    
+
+    # XXX: backwards compatibility for IPython < 0.13
+    if hasattr(sc, 'object_info'):
+        num_oinfo_args = len(inspect.getargspec(sc.object_info).args)
+        if num_oinfo_args == 2:
+            # Patch the object_info method which used to only take one argument.
+            klass = sc.__class__
+            klass._oinfo_orig = klass.object_info
+            klass.object_info = lambda s,x,y: s._oinfo_orig(x)
+
     #XXX: backwards compatibility for IPython < 1.0
     if not hasattr(kc, 'iopub_channel'):
         kc.iopub_channel = kc.sub_channel
@@ -557,7 +559,7 @@ def set_pid():
     """
     global pid
     lines = '\n'.join(['import os', '_pid = os.getpid()'])
-    msg_id = send(lines, silent=True, user_variables=['_pid'])
+    msg_id = send(lines, silent=True, user_expressions={'_pid': '_pid'})
 
     # wait to get message back from kernel
     try:
@@ -566,9 +568,9 @@ def set_pid():
         echo("no reply from IPython kernel")
         return
     try:
-        pid = int(child['content']['user_variables']['_pid'])
+        pid = int(child['content']['user_expressions']['_pid'])
     except TypeError: # change in IPython 1.0.dev moved this out
-        pid = int(child['content']['user_variables']['_pid']['data']['text/plain'])
+        pid = int(child['content']['user_expressions']['_pid']['data']['text/plain'])
     except KeyError: # change in IPython 1.0.dev moved this out
         echo("Could not get PID information, kernel not running Python?")
     return pid
