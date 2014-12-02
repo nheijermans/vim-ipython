@@ -408,11 +408,11 @@ def update_subchannel_msgs(force=False):
             debug(str(m))
             continue
 
-        header = m['header']['msg_type']
+        msg_type = m['header']['msg_type']
 
-        if header == 'status':
+        if msg_type == 'status':
             continue
-        elif header == 'stream':
+        elif msg_type == 'stream':
             # TODO: allow for distinguishing between stdout and stderr (using
             # custom syntax markers in the vim-ipython buffer perhaps), or by
             # also echoing the message to the status bar
@@ -421,13 +421,13 @@ def update_subchannel_msgs(force=False):
                 field_name = 'text'
             field_name = 'data' if 'data' in m['content'] else 'text'
             s = strip_color_escapes(m['content'][field_name])
-        elif header in ['pyout', 'execute_result']:
+        elif msg_type in ['pyout', 'execute_result']:
             s = status_prompt_out % {'line': m['content']['execution_count']}
             s += m['content']['data']['text/plain']
-        elif header == 'display_data':
+        elif msg_type == 'display_data':
             # TODO: handle other display data types (HTML? images?)
             s += m['content']['data']['text/plain']
-        elif header in ['pyin', 'execute_input']:
+        elif msg_type in ['pyin', 'execute_input']:
             # TODO: the next line allows us to resend a line to IPython if
             # %doctest_mode is on. In the future, IPython will send the
             # execution_count on subchannel, so this will need to be updated
@@ -439,12 +439,12 @@ def update_subchannel_msgs(force=False):
             dots = '.' * len(prompt.rstrip())
             dots += prompt[len(prompt.rstrip()):]
             s += m['content']['code'].rstrip().replace('\n', '\n' + dots)
-        elif header == 'pyerr':
+        elif msg_type == 'pyerr':
             c = m['content']
             s = "\n".join(map(strip_color_escapes,c['traceback']))
             s += c['ename'] + ":" + c['evalue']
         else:
-            debug('Unexpected message type {0}'.format(header))
+            debug('Unexpected message type {0}'.format(msg_type))
             debug(str(m))
 
         if s.find('\n') == -1:
