@@ -1,13 +1,30 @@
-reselect = False            # reselect lines after sending from Visual mode
-show_execution_count = True # wait to get numbers for In[43]: feedback?
-monitor_subchannel = True   # update vim-ipython 'shell' on every send?
-run_flags= "-i"             # flags to for IPython's run magic when using <F5>
-current_line = ''
+import inspect
+import os
+import re
+import signal
+import sys
+import textwrap
 
 try:
-    from queue import Empty # python3 convention
+     # Python3 compatibility.
+     from queue import Empty
 except ImportError:
     from Queue import Empty
+
+try:
+    import IPython
+except ImportError:
+    install_instructions = textwrap.dedent("""\
+        You *must* install IPython into the Python that your Vim is linked
+        against. If you are seeing this message, this usually means either (1)
+        installing IPython using the system Python that Vim is using, or (2)
+        recompiling Vim against the Python where you already have IPython
+        installed. This is only a requirement to allow Vim to speak with an
+        IPython instance using IPython's own machinery. It does *not* mean that
+        the IPython instance with which you communicate via vim-ipython needs to
+        be running the same version of Python.
+    """).strip()
+    raise ImportError("Could not find IPython.\n" + install_instructions)
 
 try:
     import vim
@@ -18,7 +35,11 @@ except ImportError:
     vim = NoOp()
     print("uh oh, not running inside vim")
 
-import sys
+reselect = False            # reselect lines after sending from Visual mode
+show_execution_count = True # wait to get numbers for In[43]: feedback?
+monitor_subchannel = True   # update vim-ipython 'shell' on every send?
+run_flags= "-i"             # flags to for IPython's run magic when using <F5>
+current_line = ''
 
 # Get around unicode problems when interfacing with Vim.
 vim_encoding=vim.eval('&encoding') or 'utf-8'
@@ -72,16 +93,6 @@ except NameError:
     kc = None
     pid = None
 
-_install_instructions = """You *must* install IPython into the Python that
-your Vim is linked against. If you are seeing this message, this usually means
-either (1) installing IPython using the system Python that Vim is using, or
-(2) recompiling Vim against the Python where you already have IPython
-installed. This is only a requirement to allow Vim to speak with an IPython
-instance using IPython's own machinery. It does *not* mean that the IPython
-instance with which you communicate via vim-ipython needs to be running the
-same version of Python.
-"""
-
 def new_ipy(s=''):
     """Create a new IPython kernel (optionally with extra arguments)
 
@@ -103,10 +114,6 @@ def km_from_string(s=''):
     such as '--shell=47378 --iopub=39859 --stdin=36778 --hb=52668' for IPython 0.11
     or just 'kernel-12345.json' for IPython 0.12
     """
-    try:
-        import IPython
-    except ImportError:
-        raise ImportError("Could not find IPython. " + _install_instructions)
     from IPython.config.loader import KeyValueConfigLoader
     try:
         from IPython.kernel import (
@@ -175,7 +182,6 @@ def km_from_string(s=''):
     send = kc.shell_channel.execute
 
     #XXX: backwards compatibility for IPython < 0.13
-    import inspect
     sc = kc.shell_channel
     num_oinfo_args = len(inspect.getargspec(sc.object_info).args)
     if num_oinfo_args == 2:
@@ -229,7 +235,6 @@ def get_doc(word, level=0):
     # Get around unicode problems when interfacing with Vim.
     return [d.encode(vim_encoding) for d in doc]
 
-import re
 # from http://serverfault.com/questions/71285/in-centos-4-4-how-can-i-strip-escape-sequences-from-a-text-file
 strip = re.compile('\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]')
 def strip_color_escapes(s):
@@ -572,7 +577,6 @@ def set_pid():
 
 def terminate_kernel_hack():
     "Send SIGTERM to our the IPython kernel"
-    import signal
     interrupt_kernel_hack(signal.SIGTERM)
 
 def interrupt_kernel_hack(signal_to_send=None):
@@ -582,8 +586,6 @@ def interrupt_kernel_hack(signal_to_send=None):
     Only works on posix.
     """
     global pid
-    import signal
-    import os
     if pid is None:
         # Avoid errors if we couldn't get pid originally,
         # by trying to obtain it now
