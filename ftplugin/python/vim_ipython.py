@@ -93,6 +93,22 @@ except NameError:
     kc = None
     pid = None
 
+
+def echo(arg,style="Question"):
+    try:
+        vim.command("echohl %s" % style)
+        vim.command("echom \"%s\"" % arg.replace('\"','\\\"'))
+        vim.command("echohl None")
+    except vim.error:
+        print("-- %s" % arg)
+
+
+def debug(s, style='Info'):
+    debug_enabled = vim_variable('g:ipy_enable_debug_output', False)
+    if bool(debug_enabled):
+        echo(s, style)
+
+
 def new_ipy(s=''):
     """Create a new IPython kernel (optionally with extra arguments)
 
@@ -153,6 +169,7 @@ def km_from_string(s=''):
             echo(":IPython " + s + " failed", "Info")
             echo("^-- failed '" + s + "' not found", "Error")
             return
+        debug("Using connection File: {0}".format(fullpath))
         km = KernelManager(connection_file = fullpath)
         km.load_connection_file()
     else:
@@ -215,14 +232,6 @@ def km_from_string(s=''):
         """)
     set_pid()
     return km
-
-def echo(arg,style="Question"):
-    try:
-        vim.command("echohl %s" % style)
-        vim.command("echom \"%s\"" % arg.replace('\"','\\\"'))
-        vim.command("echohl None")
-    except vim.error:
-        print("-- %s" % arg)
 
 def disconnect():
     "disconnect kernel manager"
@@ -333,7 +342,7 @@ def vim_ipython_is_open():
             return True
     return False
 
-def update_subchannel_msgs(debug=False, force=False):
+def update_subchannel_msgs(force=False):
     """
     Grab any pending messages and place them inside the vim-ipython shell.
     This function will do nothing if the vim-ipython shell is not visible,
@@ -395,9 +404,8 @@ def update_subchannel_msgs(debug=False, force=False):
     for m in msgs:
         s = ''
         if 'msg_type' not in m['header']:
-            # debug information
-            #echo('skipping a message on sub_channel','WarningMsg')
-            #echo(str(m))
+            debug('skipping a message on sub_channel', 'WarningMsg')
+            debug(str(m))
             continue
 
         header = m['header']['msg_type']
