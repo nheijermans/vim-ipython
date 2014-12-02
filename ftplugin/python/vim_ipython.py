@@ -145,12 +145,10 @@ def km_from_string(s=''):
             # whether or not they are allowed to have spaces. I'll have to sync
             # up with the IPython team to address these issues -pi
             if '--profile' in s:
-                k,p = s.split('--profile')
-                k = k.lstrip().rstrip() # kernel part of the string
-                p = p.lstrip().rstrip() # profile part of the string
-                fullpath = find_connection_file(k,p)
+                k, p = s.split('--profile', 1)
+                fullpath = find_connection_file(k.strip(), p.strip())
             else:
-                fullpath = find_connection_file(s.lstrip().rstrip())
+                fullpath = find_connection_file(s.strip())
         except IOError as e:
             echo(":IPython " + s + " failed", "Info")
             echo("^-- failed '" + s + "' not found", "Error")
