@@ -205,8 +205,8 @@ editor and REPL combination.
 ---------------
 Known issues:
 ---------------
-- For now, vim-ipython only connects to an ipython session in progress.
-- The standard ipython clients (console, qtconsole, notebook) do not currently
+- For now, vim-ipython only connects to an IPython session in progress.
+- The standard IPython clients (console, qtconsole, notebook) do not currently
   display the result of computation which they did not initialize. This means
   that if you send print statements for execution from within Vim, they will
   only be shown inside the vim-ipython shell buffer, but **not** within any of
@@ -301,7 +301,7 @@ Similar Projects
 * `screen.vba`_ - Simulate a split shell, using GNU Screen / tmux, that you
   can send commands to (Eric Van Dewoestine)
 * `vimux`_ - vim plugin to interact with tmux (Ben Mills)
-* `vimux-pyutils`_ - send code to tmux ipython session (Julien Rebetez)
+* `vimux-pyutils`_ - send code to tmux IPython session (Julien Rebetez)
 * conque_ - terminal emulator which uses a Vim buffer to display the program
   output (Nico Raffo)
 * `ipyqtmacvim`_ - plugin to send commands from MacVim to IPython Qt console
