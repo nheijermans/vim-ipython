@@ -41,11 +41,11 @@ monitor_subchannel = True   # update vim-ipython 'shell' on every send?
 run_flags= "-i"             # flags to for IPython's run magic when using <F5>
 current_line = ''
 
-# Get around unicode problems when interfacing with Vim.
+# Get around Unicode problems when interfacing with Vim.
 vim_encoding=vim.eval('&encoding') or 'utf-8'
 
 # IPython complains if stderr and stdout don't have flush. This is fixed in
-# newer version of Vim.
+# newer versions of Vim.
 if not hasattr(sys.stdout, 'flush'):
     class WithFlush(object):
         def __init__(self,noflush):
@@ -243,7 +243,7 @@ def get_doc(word, level=0):
         return ["Not connected to IPython, cannot query: %s" % word]
     msg_id = kc.shell_channel.object_info(word, level)
     doc = get_doc_msg(msg_id)
-    # Get around unicode problems when interfacing with Vim.
+    # Get around Unicode problems when interfacing with Vim.
     return [d.encode(vim_encoding) for d in doc]
 
 # from http://serverfault.com/questions/71285/in-centos-4-4-how-can-i-strip-escape-sequences-from-a-text-file
@@ -321,12 +321,12 @@ def ipy_complete(base, current_line, pos):
         m = get_child_msg(msg_id)
         matches = m['content']['matches']
         matches.insert(0,base) # the "no completion" version
-        # We need to be careful with unicode, because we can have unicode
+        # We need to be careful with Unicode, because we can have Unicode
         # completions for filenames (for the %run magic, for example). So the next
         # line will fail on those:
         #completions= [str(u) for u in matches]
         # because str() won't work for non-ascii characters
-        # we also have problems with unicode in Vim, hence the following:
+        # we also have problems with Unicode in Vim, hence the following:
         return matches
     except Empty:
         echo("no reply from IPython kernel")
@@ -420,13 +420,13 @@ def update_subchannel_msgs(force=False):
             s = status_prompt_out % {'line': m['content']['execution_count']}
             s += m['content']['data']['text/plain']
         elif header == 'display_data':
-            # TODO: handle other display data types (HMTL? images?)
+            # TODO: handle other display data types (HTML? images?)
             s += m['content']['data']['text/plain']
         elif header == 'pyin':
-            # TODO: the next line allows us to resend a line to ipython if
+            # TODO: the next line allows us to resend a line to IPython if
             # %doctest_mode is on. In the future, IPython will send the
             # execution_count on subchannel, so this will need to be updated
-            # once that happens
+            # once that happens.
             line_number = m['content'].get('execution_count', 0)
             prompt = status_prompt_in % {'line': line_number}
             s = prompt
@@ -440,7 +440,7 @@ def update_subchannel_msgs(force=False):
             s += c['ename'] + ":" + c['evalue']
 
         if s.find('\n') == -1:
-            # somewhat ugly unicode workaround from 
+            # somewhat ugly Unicode workaround from
             # http://vim.1045645.n5.nabble.com/Limitations-of-vim-python-interface-with-respect-to-character-encodings-td1223881.html
             if isinstance(s,unicode):
                 s=s.encode(vim_encoding)
