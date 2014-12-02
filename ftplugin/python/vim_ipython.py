@@ -44,16 +44,17 @@ current_line = ''
 # Get around unicode problems when interfacing with Vim.
 vim_encoding=vim.eval('&encoding') or 'utf-8'
 
-try:
-    sys.stdout.flush
-except AttributeError:
-    # IPython complains if stderr and stdout don't have flush
-    # This is fixed in newer version of Vim.
+# IPython complains if stderr and stdout don't have flush. This is fixed in
+# newer version of Vim.
+if not hasattr(sys.stdout, 'flush'):
     class WithFlush(object):
         def __init__(self,noflush):
-            self.write=noflush.write
-            self.writelines=noflush.writelines
-        def flush(self):pass
+            self.write = noflush.write
+            self.writelines = noflush.writelines
+
+        def flush(self):
+            pass
+
     sys.stdout = WithFlush(sys.stdout)
     sys.stderr = WithFlush(sys.stderr)
 
