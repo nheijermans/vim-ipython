@@ -439,7 +439,7 @@ def update_subchannel_msgs(force=False):
             dots = '.' * len(prompt.rstrip())
             dots += prompt[len(prompt.rstrip()):]
             s += m['content']['code'].rstrip().replace('\n', '\n' + dots)
-        elif msg_type == 'pyerr':
+        elif msg_type in ['pyerr', 'error']:
             c = m['content']
             s = "\n".join(map(strip_color_escapes,c['traceback']))
             s += c['ename'] + ":" + c['evalue']
