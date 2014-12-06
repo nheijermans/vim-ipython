@@ -25,13 +25,21 @@ Expect:
   Hello
   True
 
-Execute python (check vim_ipython import):
+
+Before (set filetype to Python):
+  filetype plugin on
+  set ft=python
+
+Execute python (Ensure vim_python ftplugin loads):
   import vim
-  vim.command("set ft=python")
+  vim.current.buffer.append("filetype is " + vim.eval("&ft"))
+  vim.current.buffer.append("IPython command exists: " + vim.eval("exists(':IPython') != 0"))
   vim.command("IPython")
   import vim_ipython
-  current.buffer.append("vim_ipython loaded")
+  vim.current.buffer.append("vim_ipython loaded")
 
 Expect:
   Hello
+  filetype is python
+  IPython command exists: 1
   vim_ipython loaded
