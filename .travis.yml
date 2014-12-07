@@ -4,6 +4,7 @@ before_script: |
   git clone https://github.com/junegunn/vader.vim.git
 
 script: |
+  python -V
   vim -Nu <(cat << VIMRC
   filetype off
   set rtp+=vader.vim
