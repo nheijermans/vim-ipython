@@ -1,12 +1,26 @@
 Given ():
   Hello
 
-Execute python ( check Python support ):
-  import os
-  import vim
-  from vim import current, vars
-  vim.command('normal! yy2p')
-  current.buffer.append(os.path.basename(vars['vader_file']))
+Execute (Make sure Vim actually works.):
+  Log "Run simple 'put' test."
+  let t="Vim is working."
+  put =t
+  Log "Done."
+
+Expect:
+  Hello
+  Vim is working.
+
+
+Execute (Check Python support ):
+  Assert has('python') == 1, 'FAIL: Vim must have Python support.'
+  Log 'Import modules.'
+  python import os
+  python import vim
+  Log 'Yank/paste current line.'
+  python vim.command('normal! yy2p')
+  python vim.current.buffer.append(os.path.basename(vim.vars['vader_file']))
+  Log 'Done.'
 
 Expect:
   Hello
@@ -15,11 +29,14 @@ Expect:
   simple.vader
 
 
-Execute python (check IPython import):
-  import vim
-  from vim import current, vars
-  import IPython
-  current.buffer.append(str(IPython.version_info[0] >= 1))
+Execute (Check IPython):
+  Assert has('python') == 1, 'FAIL: Vim must have Python support.'
+  python import vim
+  Log 'Import IPython.'
+  python import IPython
+  Log 'Check IPython version >= 1.'
+  python vim.current.buffer.append(str(IPython.version_info[0] >= 1))
+  Log 'Done.'
 
 Expect:
   Hello
@@ -27,16 +44,22 @@ Expect:
 
 
 Before (set filetype to Python):
+  Log 'Enable filetype plugin.'
   filetype plugin on
+  Log 'Set filetype=python.'
   set ft=python
+  Log '[before] done.'
 
-Execute python (Ensure vim_python ftplugin loads):
-  import vim
-  vim.current.buffer.append("filetype is " + vim.eval("&ft"))
-  vim.current.buffer.append("IPython command exists: " + vim.eval("exists(':IPython') != 0"))
-  vim.command("IPython")
-  import vim_ipython
-  vim.current.buffer.append("vim_ipython loaded")
+Execute (Ensure vim_python ftplugin loads):
+  Assert has('python') == 1, 'FAIL: Vim must have Python support.'
+  python import vim
+  python vim.current.buffer.append("filetype is " + vim.eval("&ft"))
+  AssertEqual 'python', &filetype
+  python vim.current.buffer.append("IPython command exists: " + vim.eval("exists(':IPython') != 0"))
+  python vim.command("IPython")
+  python import vim_ipython
+  python vim.current.buffer.append("vim_ipython loaded")
+  Log 'Done.'
 
 Expect:
   Hello
