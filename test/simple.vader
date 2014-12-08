@@ -12,7 +12,9 @@ Expect:
   Vim is working.
 
 
-Execute (Check Python support ):
+Execute (FIXME: Check Python support.):
+  " Note: vim.vars didn't make it into Vim until version 7.4. The commands
+  " below might not work.
   Assert has('python') == 1, 'FAIL: Vim must have Python support.'
   Log 'Import modules.'
   python import os
@@ -20,7 +22,6 @@ Execute (Check Python support ):
   Log 'Yank/paste current line.'
   python vim.command('normal! yy2p')
   Log 'Add name of vader script to file'
-  python vim.current.buffer.append(["{}={}".format(k, v) for k, v in vim.vars.items()])
   python vim.current.buffer.append(os.path.basename(vim.vars['vader_file']))
   Log 'Done.'
 
@@ -31,7 +32,7 @@ Expect:
   simple.vader
 
 
-Execute (Check IPython):
+Execute (Check IPython.):
   Assert has('python') == 1, 'FAIL: Vim must have Python support.'
   python import vim
   Log 'Import IPython.'
