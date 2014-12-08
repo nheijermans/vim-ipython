@@ -1,12 +1,16 @@
 language: vim
 
+before_install: |
+  sudo apt-get update -qq
+  sudo apt-get install python-zmq
+
 before_script: |
   git clone https://github.com/junegunn/vader.vim.git
   git clone https://github.com/ipython/ipython.git
 
 script: |
   PYTHONPATH=ipython python -m IPython console &
-  PYTHONPATH=../ipython vim -Nu <(cat << VIMRC
+  PYTHONPATH=ipython vim -Nu <(cat << VIMRC
   filetype off
   set rtp+=vader.vim
   set rtp+=.
