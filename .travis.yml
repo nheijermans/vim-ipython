@@ -2,7 +2,8 @@ language: vim
 
 before_install: |
   sudo apt-get update -qq
-  sudo apt-get install python-zmq
+  sudo apt-get install python-pip
+  sudo pip install --upgrade pyzmq
 
 before_script: |
   git clone https://github.com/junegunn/vader.vim.git
