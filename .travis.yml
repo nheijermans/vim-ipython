@@ -2,13 +2,13 @@ language: vim
 
 before_script: |
   git clone https://github.com/junegunn/vader.vim.git
+  git clone https://github.com/ipython/ipython.git
 
 script: |
-  python -V
-  vim -Nu <(cat << VIMRC
+  PYTHONPATH=ipython python -m IPython console &
+  PYTHONPATH=../ipython vim -Nu <(cat << VIMRC
   filetype off
   set rtp+=vader.vim
   set rtp+=.
-  set rtp+=after
   filetype plugin indent on
   VIMRC) -c 'Vader! test/*' > /dev/null
