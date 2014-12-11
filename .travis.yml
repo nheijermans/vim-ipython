@@ -10,7 +10,7 @@ before_script: |
   git clone https://github.com/ipython/ipython.git
 
 script: |
-  PYTHONPATH=ipython python -m IPython console &
+  PYTHONPATH=ipython python -m IPython notebook --no-browser &
   PYTHONPATH=ipython vim -Nu <(cat << VIMRC
   filetype off
   set rtp+=vader.vim
