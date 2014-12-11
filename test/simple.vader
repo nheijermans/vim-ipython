@@ -69,3 +69,36 @@ Expect:
   filetype is python
   IPython command exists: 1
   vim_ipython loaded
+
+
+Given ():
+  " ".join(["Vim", "+", "IPython", "==", "nifty"])
+
+Before (set filetype to Python):
+  filetype plugin on
+  set ft=python
+  IPython
+
+Execute (Run a command and get its result from the preview window.):
+  python import vim_ipython
+  Log 'Restarting kernel to reset execution counter.'
+  python vim_ipython.kc.shutdown(True)
+  Log 'Running current line: `' . getline('.') .'`'
+  python vim_ipython.run_this_line()
+  Log 'Copying results from preview window.'
+  " Switch to the preview window, move to the line with the "In []" command,
+  " then delete all the output
+  wincmd P
+  normal gg
+  /^In \+\[
+  normal VGd
+  " Switch back to the previous window, and paste the output.
+  wincmd p
+  normal p
+  Log 'Done.'
+
+Expect ():
+  " ".join(["Vim", "+", "IPython", "==", "nifty"])
+  In [1]: " ".join(["Vim", "+", "IPython", "==", "nifty"])
+  Out[1]: 'Vim + IPython == nifty'
+  
